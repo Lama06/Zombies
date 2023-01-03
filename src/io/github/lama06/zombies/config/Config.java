@@ -103,35 +103,27 @@ public abstract class Config<T> implements ComponentLike {
         @Override
         public void execute(final CommandSender sender, final String[] args) throws CommandException {
             if (args.length == 0) {
-                queryCurrentValue(sender);
+                final var builder =
+                        Component.text().append(Component.text("The current value of this configuration is: "));
+                final var components = toComponents();
+                if (components.size() == 1) {
+                    builder.append(components.get(0));
+                } else {
+                    for (final var component : components) {
+                        builder.appendNewline().append(component);
+                    }
+                }
+                sender.sendMessage(builder);
                 return;
             }
 
             if (args.length == 1 && args[0].equals("null")) {
-                setNull(sender);
+                setValue(null);
+                sender.sendMessage(Component.text("Config value has been changed to null").color(NamedTextColor.GREEN));
                 return;
             }
 
             command.execute(sender, args);
-        }
-
-        private void queryCurrentValue(final CommandSender sender) {
-            final var builder =
-                    Component.text().append(Component.text("The current value of this configuration is: "));
-            final var components = toComponents();
-            if (components.size() == 1) {
-                builder.append(components.get(0));
-            } else {
-                for (final var component : components) {
-                    builder.appendNewline().append(component);
-                }
-            }
-            sender.sendMessage(builder);
-        }
-
-        private void setNull(final CommandSender sender) {
-            setValue(null);
-            sender.sendMessage(Component.text("Config value has been changed to null").color(NamedTextColor.GREEN));
         }
 
         @Override

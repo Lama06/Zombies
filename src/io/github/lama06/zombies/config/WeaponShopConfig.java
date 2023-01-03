@@ -2,7 +2,7 @@ package io.github.lama06.zombies.config;
 
 import io.github.lama06.zombies.weapon.WeaponType;
 
-public final class WeaponShopConfig extends CoumpoundConfig<WeaponShop> {
+public final class WeaponShopConfig extends CompoundConfig<WeaponShop> {
     private final NamedConfig<WeaponType<?>> weapon =
             registerConfig("weapon", new NamedConfig<>(WeaponType::getByName));
     private final BlockPositionConfig activationBlock = registerConfig("activationBlock", new BlockPositionConfig());
@@ -31,9 +31,9 @@ public final class WeaponShopConfig extends CoumpoundConfig<WeaponShop> {
 
     @Override
     protected void setValueImplCompound(final WeaponShop newValue) {
-        weapon.setValueImplConfig(newValue.weapon());
-        activationBlock.setValueImplConfig(newValue.activationBLock());
-        gold.setValueImplConfig(newValue.gold());
-        refillPrice.setValueImplConfig(newValue.refillPrice());
+        weapon.setValue(newValue.weapon());
+        activationBlock.setValue(newValue.activationBLock());
+        gold.setValue(newValue.gold());
+        refillPrice.setValue(newValue.refillPrice());
     }
 }

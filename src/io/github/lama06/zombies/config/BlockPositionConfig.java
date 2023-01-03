@@ -16,6 +16,7 @@ public final class BlockPositionConfig extends PrimitiveConfig<BlockPosition> {
             throws InvalidJsonException {
         if (!(json instanceof JsonObject jsonObject))
             throw new InvalidJsonException(path, "expected object or null");
+
         if (!(jsonObject.get("x") instanceof JsonPrimitive xJson) || !xJson.isNumber())
             throw new InvalidJsonException(path.append("x"), "expected number");
         if (!(jsonObject.get("y") instanceof JsonPrimitive yJson) || !yJson.isNumber())

@@ -11,7 +11,7 @@ import org.bukkit.command.CommandSender;
 
 import java.util.*;
 
-public abstract class CoumpoundConfig<T> extends Config<T> {
+public abstract class CompoundConfig<T> extends Config<T> {
     private final Map<String, Config<?>> configs = new HashMap<>();
     private boolean isNull = true;
 
@@ -62,8 +62,6 @@ public abstract class CoumpoundConfig<T> extends Config<T> {
             throw new InvalidJsonException(path, "expected object or null");
         }
 
-        isNull = false;
-
         for (final var name : object.keySet()) {
             final var configJson = object.get(name);
             final var config = configs.get(name);
@@ -103,7 +101,7 @@ public abstract class CoumpoundConfig<T> extends Config<T> {
             registerSubCommand("init", (sender, args) -> {
                 for (final var name : configs.keySet()) {
                     final var config = configs.get(name);
-                    config.setValueImplConfig(null);
+                    config.setValue(null);
                 }
                 isNull = false;
                 sender.sendMessage(Component.text("Configuration has been initialized").color(NamedTextColor.GREEN));

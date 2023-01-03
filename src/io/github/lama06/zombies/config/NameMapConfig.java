@@ -12,11 +12,11 @@ import org.bukkit.command.CommandSender;
 import java.util.*;
 import java.util.function.Supplier;
 
-public final class NameMapConfig<ConfigType extends Config<T>, T> extends Config<Map<String, T>> {
-    private final Supplier<ConfigType> configConstructor;
-    private Map<String, ConfigType> value = null;
+public final class NameMapConfig<T> extends Config<Map<String, T>> {
+    private final Supplier<? extends Config<T>> configConstructor;
+    private Map<String, Config<T>> value = null;
 
-    public NameMapConfig(final Supplier<ConfigType> configConstructor) {
+    public NameMapConfig(final Supplier<? extends Config<T>> configConstructor) {
         this.configConstructor = configConstructor;
     }
 

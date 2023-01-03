@@ -1,6 +1,6 @@
 package io.github.lama06.zombies.config;
 
-public final class DoorConfig extends CoumpoundConfig<Door> {
+public final class DoorConfig extends CompoundConfig<Door> {
     private final StringConfig area1 = registerConfig("area1", new StringConfig());
     private final StringConfig area2 = registerConfig("area2", new StringConfig());
     private final BlockPositionConfig activationBlock = registerConfig("activationBlock", new BlockPositionConfig());
@@ -29,11 +29,11 @@ public final class DoorConfig extends CoumpoundConfig<Door> {
 
     @Override
     protected void setValueImplCompound(final Door newValue) {
-        area1.setValueImplConfig(newValue.area1());
-        area2.setValueImplConfig(newValue.area2());
-        activationBlock.setValueImplConfig(newValue.activationBlock());
-        gold.setValueImplConfig(newValue.gold());
-        blocks.setValueImplConfig(newValue.blocks());
-        template.setValueImplConfig(newValue.template());
+        area1.setValue(newValue.area1());
+        area2.setValue(newValue.area2());
+        activationBlock.setValue(newValue.activationBlock());
+        gold.setValue(newValue.gold());
+        blocks.setValue(newValue.blocks());
+        template.setValue(newValue.template());
     }
 }

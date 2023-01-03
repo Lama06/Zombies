@@ -2,7 +2,7 @@ package io.github.lama06.zombies.config;
 
 import io.github.lama06.zombies.util.EntityPosition;
 
-public final class EntityPositionConfig extends CoumpoundConfig<EntityPosition> {
+public final class EntityPositionConfig extends CompoundConfig<EntityPosition> {
     private final FinePositionConfig position = registerConfig("position", new FinePositionConfig());
     private final FloatConfig yaw = registerConfig("yaw", new FloatConfig());
     private final FloatConfig pitch = registerConfig("pitch", new FloatConfig());
@@ -27,8 +27,8 @@ public final class EntityPositionConfig extends CoumpoundConfig<EntityPosition> 
 
     @Override
     protected void setValueImplCompound(final EntityPosition newValue) {
-        position.setValueImplConfig(newValue.position());
-        yaw.setValueImplConfig(newValue.yaw());
-        pitch.setValueImplConfig(newValue.pitch());
+        position.setValue(newValue.position());
+        yaw.setValue(newValue.yaw());
+        pitch.setValue(newValue.pitch());
     }
 }

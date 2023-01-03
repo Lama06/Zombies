@@ -1,6 +1,6 @@
 package io.github.lama06.zombies.config;
 
-public final class PowerSwitchConfig extends CoumpoundConfig<PowerSwitch> {
+public final class PowerSwitchConfig extends CompoundConfig<PowerSwitch> {
     private final IntegerConfig gold = registerConfig("gold", new IntegerConfig());
     private final BlockPositionConfig activationBlock = registerConfig("activationBlock", new BlockPositionConfig());
 
@@ -21,7 +21,7 @@ public final class PowerSwitchConfig extends CoumpoundConfig<PowerSwitch> {
 
     @Override
     protected void setValueImplCompound(final PowerSwitch newValue) {
-        gold.setValueImplConfig(newValue.gold());
-        activationBlock.setValueImplConfig(newValue.activationBlock());
+        gold.setValue(newValue.gold());
+        activationBlock.setValue(newValue.activationBlock());
     }
 }
