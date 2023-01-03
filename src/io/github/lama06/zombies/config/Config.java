@@ -15,8 +15,6 @@ import java.util.List;
 public abstract class Config<T> implements ComponentLike {
     private CommandNode command;
 
-    protected abstract boolean isNullImplConfig();
-
     protected abstract T getValueImplConfig(ConfigPath path) throws InvalidConfigException;
 
     protected abstract void setValueImplConfig(T data);
@@ -30,14 +28,14 @@ public abstract class Config<T> implements ComponentLike {
     protected abstract CommandNode createCommandImplConfig();
 
     public final boolean isNull() {
-        return isNullImplConfig();
+        try {
+            return getValue() == null;
+        } catch (final InvalidConfigException e) {
+            return false;
+        }
     }
 
     public final T getValue(final ConfigPath path) throws InvalidConfigException {
-        if (isNull()) {
-            return null;
-        }
-
         return getValueImplConfig(path);
     }
 

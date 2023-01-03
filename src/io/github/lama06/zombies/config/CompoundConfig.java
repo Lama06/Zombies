@@ -25,12 +25,11 @@ public abstract class CompoundConfig<T> extends Config<T> {
     }
 
     @Override
-    protected boolean isNullImplConfig() {
-        return isNull;
-    }
-
-    @Override
     protected final T getValueImplConfig(final ConfigPath path) throws InvalidConfigException {
+        if (isNull) {
+            return null;
+        }
+
         return getValueImplCompound(path);
     }
 
@@ -41,8 +40,8 @@ public abstract class CompoundConfig<T> extends Config<T> {
             return;
         }
 
-        isNull = false;
         setValueImplCompound(data);
+        isNull = false;
     }
 
     @Override
@@ -81,7 +80,7 @@ public abstract class CompoundConfig<T> extends Config<T> {
             if (components.size() == 1) {
                 result.add(Component.text(name + ": ").append(components.get(0)));
             } else {
-                result.add(Component.text(name + ": "));
+                result.add(Component.text(name + ":"));
                 for (final var component : components) {
                     result.add(Component.text("    ").append(component));
                 }
@@ -91,7 +90,7 @@ public abstract class CompoundConfig<T> extends Config<T> {
     }
 
     @Override
-    public final CommandNode createCommandImplConfig() {
+    protected final CommandNode createCommandImplConfig() {
         return new Command();
     }
 
@@ -99,6 +98,10 @@ public abstract class CompoundConfig<T> extends Config<T> {
         @Override
         protected void registerSubcommands() {
             registerSubCommand("init", (sender, args) -> {
+                if (!isNull) {
+                    throw new CommandException("Already initialized");
+                }
+
                 for (final var name : configs.keySet()) {
                     final var config = configs.get(name);
                     config.setValue(null);

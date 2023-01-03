@@ -23,11 +23,6 @@ public abstract class PrimitiveConfig<T> extends Config<T> {
             throws CommandException;
 
     @Override
-    protected boolean isNullImplConfig() {
-        return value == null;
-    }
-
-    @Override
     protected final JsonElement serializeImplConfig() {
         return serializeImplPrimitive();
     }

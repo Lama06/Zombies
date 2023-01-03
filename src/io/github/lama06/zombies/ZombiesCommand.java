@@ -15,11 +15,11 @@ public final class ZombiesCommand extends BranchCommandNode {
 
     @Override
     protected void registerSubcommands() {
-        registerSubCommand("worlds", new WorldsCommandNode());
-        registerSubCommand("config", new ConfigCommandNode());
+        registerSubCommand("worlds", new WorldsCommand());
+        registerSubCommand("config", new ConfigCommand());
     }
 
-    private static final class WorldsCommandNode extends BranchCommandNode {
+    private static final class WorldsCommand extends BranchCommandNode {
         @Override
         protected void checkHasPermission(final CommandSender sender) throws CommandException {
             Require.op(sender);
@@ -64,7 +64,7 @@ public final class ZombiesCommand extends BranchCommandNode {
         }
     }
 
-    private static class ConfigCommandNode implements CommandNode {
+    private static class ConfigCommand implements CommandNode {
         @Override
         public void execute(final CommandSender sender, final String[] args) throws CommandException {
             Require.op(sender);

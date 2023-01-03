@@ -13,7 +13,7 @@ import org.bukkit.command.CommandSender;
 public final class FinePositionConfig extends PrimitiveConfig<FinePosition> {
     @Override
     protected FinePosition deserializeImplPrimitive(final ConfigPath path, final JsonElement json) throws InvalidJsonException {
-        if (!(json instanceof JsonObject object)) throw new InvalidJsonException(path, "expected json object");
+        if (!(json instanceof JsonObject object)) throw new InvalidJsonException(path, "expected object or null");
 
         if (!(object.get("x") instanceof JsonPrimitive xJson) || !xJson.isNumber())
             throw new InvalidJsonException(path.append("x"), "expected number");

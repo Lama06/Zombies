@@ -14,23 +14,18 @@ import java.util.function.Supplier;
 
 public final class NameMapConfig<T> extends Config<Map<String, T>> {
     private final Supplier<? extends Config<T>> configConstructor;
-    private Map<String, Config<T>> value = null;
+    private Map<String, Config<T>> configs = null;
 
     public NameMapConfig(final Supplier<? extends Config<T>> configConstructor) {
         this.configConstructor = configConstructor;
     }
 
     @Override
-    protected boolean isNullImplConfig() {
-        return value == null;
-    }
-
-    @Override
     protected JsonElement serializeImplConfig() {
         final var json = new JsonObject();
-        for (final var name : value.keySet()) {
-            final var element = value.get(name);
-            json.add(name, element.serialize());
+        for (final var name : configs.keySet()) {
+            final var config = configs.get(name);
+            json.add(name, config.serialize());
         }
         return json;
     }
@@ -41,30 +36,30 @@ public final class NameMapConfig<T> extends Config<Map<String, T>> {
             throw new InvalidJsonException(path, "expected object or null");
         }
 
-        value = new HashMap<>();
-
+        final var configs = new HashMap<String, Config<T>>();
         for (final var name : object.keySet()) {
-            final var elementJson = object.get(name);
-            final var element = configConstructor.get();
-            element.deserialize(path.append(name), elementJson);
-            value.put(name, element);
+            final var configJson = object.get(name);
+            final var config = configConstructor.get();
+            config.deserialize(path.append(name), configJson);
+            configs.put(name, config);
         }
+        this.configs = configs;
     }
 
     @Override
     protected List<Component> toComponentsImplConfig() {
-        if (value.size() == 0) {
+        if (configs.size() == 0) {
             return List.of(Component.text("{}"));
         }
 
         final var result = new ArrayList<Component>();
-        for (final var name : value.keySet()) {
-            final var element = value.get(name);
-            final var components = element.toComponents();
+        for (final var name : configs.keySet()) {
+            final var config = configs.get(name);
+            final var components = config.toComponents();
             if (components.size() == 1) {
                 result.add(Component.text(name + ": ").append(components.get(0)));
             } else {
-                result.add(Component.text(name + ": "));
+                result.add(Component.text(name + ":"));
                 for (final var component : components) {
                     result.add(Component.text("    ").append(component));
                 }
@@ -75,9 +70,13 @@ public final class NameMapConfig<T> extends Config<Map<String, T>> {
 
     @Override
     protected Map<String, T> getValueImplConfig(final ConfigPath path) throws InvalidConfigException {
+        if (configs == null) {
+            return null;
+        }
+
         final var result = new HashMap<String, T>();
-        for (final var name : value.keySet()) {
-            final var config = value.get(name);
+        for (final var name : configs.keySet()) {
+            final var config = configs.get(name);
             result.put(name, config.getValue(path.append(name)));
         }
         return Collections.unmodifiableMap(result);
@@ -86,16 +85,16 @@ public final class NameMapConfig<T> extends Config<Map<String, T>> {
     @Override
     protected void setValueImplConfig(final Map<String, T> newValue) {
         if (newValue == null) {
-            value = null;
+            configs = null;
             return;
         }
 
-        value = new HashMap<>();
+        configs = new HashMap<>();
         for (final var name : newValue.keySet()) {
-            final var element = newValue.get(name);
+            final var value = newValue.get(name);
             final var config = configConstructor.get();
-            config.setValue(element);
-            value.put(name, config);
+            config.setValue(value);
+            configs.put(name, config);
         }
     }
 
@@ -110,20 +109,27 @@ public final class NameMapConfig<T> extends Config<Map<String, T>> {
             Require.argsAtLeast(args, 1);
 
             if (args[0].equals("init")) {
-                value = new HashMap<>();
+                if (configs != null) {
+                    throw new CommandException("Already initialized");
+                }
+
+                configs = new HashMap<>();
                 sender.sendMessage(Component.text("Map has been initialized").color(NamedTextColor.GREEN));
                 return;
             }
 
-            if (value == null) {
+            if (configs == null) {
                 throw new CommandException("Not initialized");
             }
 
             if (args[0].equals("add")) {
                 Require.argsExact(args, 2);
                 final var name = args[1];
+                if (configs.containsKey(name)) {
+                    throw new CommandException("Key already exists");
+                }
                 final var newConfig = configConstructor.get();
-                value.put(name, newConfig);
+                configs.put(name, newConfig);
                 sender.sendMessage(Component.text("Successfully added new element").color(NamedTextColor.GREEN));
                 return;
             }
@@ -131,7 +137,7 @@ public final class NameMapConfig<T> extends Config<Map<String, T>> {
             if (args[0].equals("remove")) {
                 Require.argsExact(args, 2);
                 final var name = args[1];
-                final var previous = value.remove(name);
+                final var previous = configs.remove(name);
                 if (previous == null) {
                     throw new CommandException("Name not found");
                 } else {
@@ -140,7 +146,7 @@ public final class NameMapConfig<T> extends Config<Map<String, T>> {
             }
 
             final var name = args[0];
-            final var element = value.get(name);
+            final var element = configs.get(name);
             if (element == null) {
                 throw new CommandException("Name not found");
             }

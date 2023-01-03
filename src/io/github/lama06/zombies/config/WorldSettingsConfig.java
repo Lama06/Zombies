@@ -8,6 +8,8 @@ public final class WorldSettingsConfig extends CompoundConfig<WorldSettings> {
     private final NameMapConfig<Window> windows = registerConfig("windows", new NameMapConfig<>(WindowConfig::new));
     private final NameMapConfig<WeaponShop> weaponShops =
             registerConfig("weaponShops", new NameMapConfig<>(WeaponShopConfig::new));
+    private final NameMapConfig<MonsterSpawnLocation> spawnLocations =
+            registerConfig("spawnLocations", new NameMapConfig<>(MonsterSpawnLocationConfig::new));
     private final ListConfig<SpawnRate> spawnRates =
             registerConfig("spawnRates", new ListConfig<>(SpawnRateConfig::new));
 
@@ -19,13 +21,32 @@ public final class WorldSettingsConfig extends CompoundConfig<WorldSettings> {
         final var doors = this.doors.getValue(path.append("doors"));
         final var windows = this.windows.getValue(path.append("windows"));
         final var weaponShops = this.weaponShops.getValue(path.append("weaponShops"));
+        final var spawnLocations = this.spawnLocations.getValue(path.append("spawnLocations"));
         final var spawnRates = this.spawnRates.getValue(path.append("spawnRates"));
 
-        if (!WorldSettings.isValid(startArea, spawnPoint, powerSwitch, doors, windows, weaponShops, spawnRates)) {
+        if (!WorldSettings.isValid(
+                startArea,
+                spawnPoint,
+                powerSwitch,
+                doors,
+                windows,
+                weaponShops,
+                spawnLocations,
+                spawnRates
+        )) {
             throw new InvalidConfigException(path);
         }
 
-        return new WorldSettings(startArea, spawnPoint, powerSwitch, doors, windows, weaponShops, spawnRates);
+        return new WorldSettings(
+                startArea,
+                spawnPoint,
+                powerSwitch,
+                doors,
+                windows,
+                weaponShops,
+                spawnLocations,
+                spawnRates
+        );
     }
 
     @Override
@@ -35,6 +56,7 @@ public final class WorldSettingsConfig extends CompoundConfig<WorldSettings> {
         powerSwitch.setValue(newValue.powerSwitch());
         doors.setValue(newValue.doors());
         windows.setValue(newValue.windows());
+        spawnLocations.setValue(newValue.spawnLocations());
         spawnRates.setValue(newValue.spawnRates());
     }
 }

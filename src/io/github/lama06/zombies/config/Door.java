@@ -21,6 +21,7 @@ public record Door(
             final BlockArea template
     ) {
         return area1 != null && !area1.isEmpty() && area2 != null && !area2.isEmpty() && !area1.equals(area2) &&
-                activationBlock != null && gold >= 0 && blocks != null && template != null;
+                activationBlock != null && gold >= 0 && blocks != null && template != null &&
+                blocks.hasSameDimensions(template);
     }
 }
